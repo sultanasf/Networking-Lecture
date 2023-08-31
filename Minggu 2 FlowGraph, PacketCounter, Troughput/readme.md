@@ -55,6 +55,10 @@ Connection termination sendiri dimulai ketika salah satu host mengirimkan flag F
 
 - Pada detik 30.3937, server merespon berupa acknowledgment dengan tujuan menginformasikan kepada client jika FIN sudah diterima.
 
+## Ilustrasi Data Transfer
+
+![Gambar](./assets/gambar.jpg)
+
 ## Packet Counter
 
 ![Packet Counter](./assets/PC.png)_Packet Counter_
