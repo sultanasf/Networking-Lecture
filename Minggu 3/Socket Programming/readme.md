@@ -85,6 +85,56 @@ Membuat server sederhana menggunakan socket yang bisa meng-handle banyak client.
 - __Client__:
 Berkomunikasi dengan server melalui socket. Kode ini menghubungkan klien ke server yang berjalan di alamat IP yang sudah kita tentukan (pada kasus ini 127.0.0.1 atau localhost) pada port 5001.
 
+### Percobaan (mengirim char 'n' sebanyak n kali)
+
+```c
+while (1) {
+    int n;
+    printf("How many n do you want to input? ");
+    scanf("%d", &n);
+
+    bzero(buffer,n);
+    for(int i=0; i<n; i++){
+        buffer[i] = 'a';
+    }
+    buffer[n] = '\0';
+    
+    n = write(sockfd,buffer,strlen(buffer));
+    if (n < 0){
+        perror("ERROR while writing to socket");
+        exit(1);
+    }
+    bzero(buffer,n);
+
+    n = read(sockfd, buffer, n);
+    if (n < 0){
+        perror("ERROR while reading from socket");
+        exit(1);
+    }
+
+    printf("server replied: %s \n", buffer);
+    // escape this loop, if the server sends message "quit"
+    if (!bcmp(buffer, "quit", 4))
+        break;
+}
+```
+
+Ini adalah loop utama program, di mana program akan berinteraksi dengan server. Program pertama-tama meminta pengguna untuk memasukkan jumlah karakter yang akan dikirim ke server.
+
+Kemudian, program mengisi buffer dengan karakter 'a' sebanyak yang diminta oleh pengguna. Data dalam buffer dikirim ke server menggunakan write, dan program menerima respons dari server menggunakan read.
+
+Jika terjadi kesalahan dalam penulisan atau pembacaan data, pesan kesalahan dicetak, dan program keluar.Program mencetak respons dari server dan memeriksa apakah respons tersebut adalah "quit". Jika ya, program akan keluar dari loop utama, mengakhiri komunikasi dengan server.
+
+- Percobaan 1
+Dalam percobaan ini saya mencoba untuk mengirim pesan string 'n' dengan panjang 5000. Pesan tersebut diterima server lalu dikirimkan lagi ke client dengan sukses. namun dari sisi server
+
+Yang dilakukan oleh client :
+<img src="./assets/terminaluntilN.png">
+disini client ke server akan mengirim sebanyak n yang kita inputkan, disini menginputkan 5000.
+
+<img src="./assets/untilN.png">
+melihat wireshark disisi client, client -> server akan mengirim langsung 5000.namun di sisi server -> client akan mengirim dibagi segment segment yaitu 1448, 1448, 1448, 659.
+
 ## Capture Wireshark
 
 ![Alt text](./assets/image-2.png)
